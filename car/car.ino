@@ -60,11 +60,11 @@ void loop() {
 
   client.println("<!DOCTYPE html><html><head><title>Rover Control</title></head><body>");
   client.println("<h1>Control Rover</h1>");
-  client.println("<a href=\"/forward\"><button style='width:100px;height:50px;'>Forward</button></a><br><br>");
-  client.println("<a href=\"/left\"><button style='width:100px;height:50px;'>Left</button></a>");
-  client.println("<a href=\"/stop\"><button style='width:100px;height:50px;'>Stop</button></a>");
-  client.println("<a href=\"/right\"><button style='width:100px;height:50px;'>Right</button></a><br><br>");
-  client.println("<a href=\"/backward\"><button style='width:100px;height:50px;'>Backward</button></a>");
+  client.println("<a href=\"/forward\"><button style='width:500px;height:100px;'>Forward</button></a><br><br>");
+  client.println("<a href=\"/left\"><button style='width:500px;height:100px;'>Left</button></a>");
+  client.println("<a href=\"/stop\"><button style='width:500px;height:100px;'>Stop</button></a>");
+  client.println("<a href=\"/right\"><button style='width:500px;height:100px;'>Right</button></a><br><br>");
+  client.println("<a href=\"/backward\"><button style='width:500px;height:100px;'>Backward</button></a>");
   client.println("</body></html>");
 
   client.println();
@@ -74,7 +74,7 @@ void loop() {
 }
 
 // Movement functions
-void moveForward() {
+void moveBackward() {
   //analogWrite(enA, 255);
   //analogWrite(enB, 255);
   digitalWrite(in1, HIGH);
@@ -83,7 +83,7 @@ void moveForward() {
   digitalWrite(in4, LOW);
 }
 
-void moveBackward() {
+void moveForward() {
   //analogWrite(enA, 255);
   //analogWrite(enB, 255);
   digitalWrite(in1, LOW);
