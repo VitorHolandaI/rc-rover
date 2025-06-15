@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hold Button Demo</title>
+  <style>
+    /* Estilização básica do botão */
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    button {
+      padding: 20px 40px;
+      font-size: 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px #2d6a35;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:active {
+      background-color: #3e8e41;
+      transform: translateY(2px);
+      box-shadow: 0 2px #2d6a35;
+    }
+
+    #log {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Segure o botão</h1>
+  <button id="holdButton">↑ Enviar</button>
+
+  <div id="log">Nenhuma requisição ainda</div>
+
+  <script>
+    const button = document.getElementById("holdButton");
+    const log = document.getElementById("log");
+
+    let intervalId = null;
+
+    // Função que simula envio de requisição
+    function sendFakeRequest() {
+      const now = new Date().toLocaleTimeString();
+      console.log("Enviando requisição em", now);
+      log.textContent = "Requisição enviada em: " + now;
+    }
+
+    // Quando o botão for pressionado (mouse ou toque), começa a enviar
+    function startSending() {
+      sendFakeRequest(); // envia imediatamente
+      intervalId = setInterval(sendFakeRequest, 200); // repete a cada 200ms
+    }
+
+    // Quando o botão for solto, para de enviar
+    function stopSending() {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    // Eventos para mouse e toque (mobile)
+    button.addEventListener("mousedown", startSending);
+    button.addEventListener("touchstart", startSending);
+
+    button.addEventListener("mouseup", stopSending);
+    button.addEventListener("mouseleave", stopSending);
+    button.addEventListener("touchend", stopSending);
+    button.addEventListener("touchcancel", stopSending);
+  </script>
+
+</body>
+</html>
+
