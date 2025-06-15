@@ -50,16 +50,16 @@ void setup() {
   server.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
     turnLeft();
     Serial.println("left: " + String(count));
-    request->send(150, "text/plain", String(count));
-    delay(200);
+    request->send(200, "text/plain", String(count));
+    delay(50);
     stopMotors();
   });
 
   server.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
     turnRight();
     Serial.println("right: " + String(count));
-    request->send(150, "text/plain", String(count));
-    delay(200);
+    request->send(200, "text/plain", String(count));
+    delay(50);
     stopMotors();
   });
 
@@ -153,7 +153,7 @@ void setup() {
             fetch(url).then(r => r.text()).then(v => updateCountValue(v));
             return setInterval(() => {
               fetch(url).then(r => r.text()).then(v => updateCountValue(v));
-            }, 200);
+            }, 20);
           }
 
           function stopSendingRequest(id) {
