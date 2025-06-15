@@ -1,118 +1,130 @@
-#include <WiFi.h>
-#include <WiFiAP.h>
+<script>
+  const fwdBtn = document.getElementById('foward');
+  const bckBtn = document.getElementById('backward');
+  const rgtBtn = document.getElementById('right');
+  const lftBtn = document.getElementById('left');
+  const count = document.getElementById('count');
 
-// Motor A (left)
-#define enA D0
-#define in1 D1
-#define in2 D2
+  let fwdInterval = null;
+  let bckInterval = null;
+  let rgtInterval = null;
+  let lftInterval = null;
 
-// Motor B (right)
-#define enB D3
-#define in3 D4
-#define in4 D5
+  function startSendingRequest(url, updateCount) {
+    fetch(url).then(r => r.text()).then(v => {
+      updateCount(v);
+    });
+    return setInterval(() => {
+      fetch(url).then(r => r.text()).then(v => {
+        updateCount(v);
+      });
+    }, 200);
+  }
 
-const char *ssid = "carAp";
-const char *password = "334166";
+  function stopSendingRequest(intervalId) {
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+  }
 
-WiFiServer server(80);
+  function updateCountValue(v) {
+    count.dataset.count = v;
+    count.innerText = v;
+  }
 
-void setup() {
-  //Serial.begin(115200);
+  // Forward button
+  fwdBtn.addEventListener('mousedown', () => {
+    fwdInterval = startSendingRequest('/foward', updateCountValue);
+  });
+  fwdBtn.addEventListener('touchstart', () => {
+    fwdInterval = startSendingRequest('/foward', updateCountValue);
+  });
+  fwdBtn.addEventListener('mouseup', () => {
+    stopSendingRequest(fwdInterval);
+    fwdInterval = null;
+  });
+  fwdBtn.addEventListener('mouseleave', () => {
+    stopSendingRequest(fwdInterval);
+    fwdInterval = null;
+  });
+  fwdBtn.addEventListener('touchend', () => {
+    stopSendingRequest(fwdInterval);
+    fwdInterval = null;
+  });
+  fwdBtn.addEventListener('touchcancel', () => {
+    stopSendingRequest(fwdInterval);
+    fwdInterval = null;
+  });
 
-  pinMode(enA, OUTPUT);
-  pinMode(enB, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
+  // Backward button
+  bckBtn.addEventListener('mousedown', () => {
+    bckInterval = startSendingRequest('/backward', updateCountValue);
+  });
+  bckBtn.addEventListener('touchstart', () => {
+    bckInterval = startSendingRequest('/backward', updateCountValue);
+  });
+  bckBtn.addEventListener('mouseup', () => {
+    stopSendingRequest(bckInterval);
+    bckInterval = null;
+  });
+  bckBtn.addEventListener('mouseleave', () => {
+    stopSendingRequest(bckInterval);
+    bckInterval = null;
+  });
+  bckBtn.addEventListener('touchend', () => {
+    stopSendingRequest(bckInterval);
+    bckInterval = null;
+  });
+  bckBtn.addEventListener('touchcancel', () => {
+    stopSendingRequest(bckInterval);
+    bckInterval = null;
+  });
 
-  // Default all off
-  stopMotors();
+  // Right button
+  rgtBtn.addEventListener('mousedown', () => {
+    rgtInterval = startSendingRequest('/right', updateCountValue);
+  });
+  rgtBtn.addEventListener('touchstart', () => {
+    rgtInterval = startSendingRequest('/right', updateCountValue);
+  });
+  rgtBtn.addEventListener('mouseup', () => {
+    stopSendingRequest(rgtInterval);
+    rgtInterval = null;
+  });
+  rgtBtn.addEventListener('mouseleave', () => {
+    stopSendingRequest(rgtInterval);
+    rgtInterval = null;
+  });
+  rgtBtn.addEventListener('touchend', () => {
+    stopSendingRequest(rgtInterval);
+    rgtInterval = null;
+  });
+  rgtBtn.addEventListener('touchcancel', () => {
+    stopSendingRequest(rgtInterval);
+    rgtInterval = null;
+  });
 
-  //Serial.println("Setting up Access Point...");
-  WiFi.softAP(ssid, password);
- // Serial.print("AP IP address: ");
-  //Serial.println(WiFi.softAPIP());
-
-  server.begin();
-}
-
-void loop() {
-  WiFiClient client = server.available();
-  if (!client) return;
-
-  //Serial.println("Client connected.");
-  String req = client.readStringUntil('\r');
-  //Serial.println(req);
-  client.flush();
-
-  // Handle movement commands
-  if (req.indexOf("/forward") != -1) moveForward();
-  else if (req.indexOf("/backward") != -1) moveBackward();
-  else if (req.indexOf("/left") != -1) turnLeft();
-  else if (req.indexOf("/right") != -1) turnRight();
-  else stopMotors();
-
-  // Send HTML response
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-type:text/html");
-  client.println();
-
-  client.println("<!DOCTYPE html><html><head><title>Rover Control</title></head><body>");
-  client.println("<h1>Control Rover</h1>");
-  client.println("<a href=\"/forward\"><button style='width:500px;height:100px;'>Forward</button></a><br><br>");
-  client.println("<a href=\"/left\"><button style='width:500px;height:100px;'>Left</button></a>");
-  client.println("<a href=\"/stop\"><button style='width:500px;height:100px;'>Stop</button></a>");
-  client.println("<a href=\"/right\"><button style='width:500px;height:100px;'>Right</button></a><br><br>");
-  client.println("<a href=\"/backward\"><button style='width:500px;height:100px;'>Backward</button></a>");
-  client.println("</body></html>");
-
-  client.println();
-  delay(10);
-  client.stop();
-  //Serial.println("Client disconnected.");
-}
-
-// Movement functions
-void moveBackward() {
-  //analogWrite(enA, 255);
-  //analogWrite(enB, 255);
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-}
-
-void moveForward() {
-  //analogWrite(enA, 255);
-  //analogWrite(enB, 255);
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-}
-
-void turnLeft() {
-  //analogWrite(enA, 255);
-  //analogWrite(enB, 255);
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-}
-
-void turnRight() {
-  //analogWrite(enA, 255);
-  //analogWrite(enB, 255);
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-}
-
-void stopMotors() {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
-}
+  // Left button
+  lftBtn.addEventListener('mousedown', () => {
+    lftInterval = startSendingRequest('/left', updateCountValue);
+  });
+  lftBtn.addEventListener('touchstart', () => {
+    lftInterval = startSendingRequest('/left', updateCountValue);
+  });
+  lftBtn.addEventListener('mouseup', () => {
+    stopSendingRequest(lftInterval);
+    lftInterval = null;
+  });
+  lftBtn.addEventListener('mouseleave', () => {
+    stopSendingRequest(lftInterval);
+    lftInterval = null;
+  });
+  lftBtn.addEventListener('touchend', () => {
+    stopSendingRequest(lftInterval);
+    lftInterval = null;
+  });
+  lftBtn.addEventListener('touchcancel', () => {
+    stopSendingRequest(lftInterval);
+    lftInterval = null;
+  });
+</script>
