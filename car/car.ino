@@ -35,7 +35,7 @@ void setup() {
     moveForward();
     Serial.println("forward: " + String(count));
     request->send(200, "text/plain", String(count));
-    delay(200);
+    delay(100);
     stopMotors();
   });
 
@@ -43,7 +43,7 @@ void setup() {
     moveBackward();
     Serial.println("backward: " + String(count));
     request->send(200, "text/plain", String(count));
-    delay(200);
+    delay(100);
     stopMotors();
   });
 
@@ -153,7 +153,7 @@ void setup() {
             fetch(url).then(r => r.text()).then(v => updateCountValue(v));
             return setInterval(() => {
               fetch(url).then(r => r.text()).then(v => updateCountValue(v));
-            }, 20);
+            }, 200);
           }
 
           function stopSendingRequest(id) {
