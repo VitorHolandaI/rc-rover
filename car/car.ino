@@ -11,14 +11,15 @@
 #define enB D3
 #define in3 D4
 #define in4 D5
-
-const char *ssid = "carAp";
-const char *password = "334166";
+const char *ssid = "carap";
+const char *password = "33416688";
 
 AsyncWebServer server(80);
 int count = 0;
 
 void setup() {
+  Serial.begin(115200);
+
   pinMode(enA, OUTPUT);
   pinMode(enB, OUTPUT);
   pinMode(in1, OUTPUT);
@@ -26,10 +27,13 @@ void setup() {
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
 
-  Serial.begin(115200);
-  WiFi.softAP(ssid, password);
-  Serial.println(WiFi.softAPIP());
-
+  WiFi.mode(WIFI_STA);          // Station mode
+  WiFi.begin(ssid, password);  // Connect to AP
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
   // Motor control endpoints
   server.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
     moveForward();
@@ -188,6 +192,14 @@ void setup() {
           setupButtonEvents('left', '/left');
           setupButtonEvents('right', '/right');
         </script>
+
+        <img
+            src='http://10.178.174.47:4747/video?640x480'
+            width='640'
+            height='480'
+            alt='Live stream'
+          />
+
       </body>
       </html>
     )rawliteral";
